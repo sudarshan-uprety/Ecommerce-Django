@@ -21,3 +21,7 @@ def store(request,category_slug=None):
         'product_count':product_count,
     }
     return render(request,'store/store.html',context)
+
+
+def product_detail(request,category_slug,product_slug):   #this function is used to return the single product pahe for eg when clicked on a shoes it shows price, pictures and many more.
+    return render(request,'store/product_detail.html')

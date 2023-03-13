@@ -2,7 +2,7 @@ Welcome to my Django e-commerce project! This project is an online shopping webs
 
 To run this project on your local machine, please follow the steps given below:
 
-    Clone this repository to your local machine using the command: git clone <repository url>
+    Clone this repository to your local machine using the command: git clone https://github.com/sudarshan-uprety/Ecommerce-Django.git
 
     Navigate to the project directory using the command: cd <project directory>
 

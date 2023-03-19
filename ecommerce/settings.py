@@ -141,3 +141,13 @@ from django.contrib.messages import constants as messages
 MESSAGE_TAGS = {
     messages.INFO: 'danger',
 }
+
+
+#here we will configure the verfication of email and other things
+#SMTP configuration
+
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_PORT=587
+EMAIL_HOST_USER='sec.sudarshanuprety@gmail.com'
+EMAIL_HOST_PASSWORD='lhdzwubomgdtfovx'
+EMAIL_USE_TLS=True

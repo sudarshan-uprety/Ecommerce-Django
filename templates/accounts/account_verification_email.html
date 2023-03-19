@@ -1,0 +1,15 @@
+{%autoescape off%} <!--using autoescape to send the email s=which is the safest method-->
+
+
+Hi, {{user.first_name}},
+    Please click on below link to confirm your regestration.
+
+    http://{{domain}}{%url 'activate' uidb64=uid token=token%}
+
+
+    If you think this is not you, please ignore this email.
+
+
+
+
+{%endautoescape%}

@@ -44,6 +44,8 @@ def register(request):
             send_email=EmailMessage(mail_subject,message,to=[to_email]) #this is to send the email, what to send, where to send
             send_email.send()
             messages.success(request,'Regestration success. Please use the activation link to continue.')
+
+
             return redirect('/accounts/login/?command=verification&email='+email) #this will show if the user came from registration form or not
     else:
         form=RegestrationForm()
@@ -67,7 +69,7 @@ def login(request):
         if user is not None:
             auth.login(request,user)
             #messages.success(request,"you're now logged in")
-            return redirect('home')
+            return redirect('dashboard')
         else:
             messages.error(request,"Invalid login details")
             return redirect ('login')
@@ -99,5 +101,54 @@ def activate(request,uidb64,token):
         return redirect('register')
     
 
+@login_required(login_url='login')
+def dashboard(request):
+    return render(request,'accounts/dashboard.html')
 
 
+def forgotPassword(request):
+    if request.method=='POST':
+        email=request.POST["email"]
+        if Account.objects.filter(email=email).exists():
+            user=Account.objects.get(email__exact=email)
+
+            #resetpassword email
+            current_site=get_current_site(request)
+            mail_subject="Reset Your Password"
+            message=render_to_string('accounts/reset_password_email.html',{
+                'user':user,
+                'domain': current_site,
+                'uid':urlsafe_base64_encode(force_bytes(user.pk)), #this is to encode the uid by the encoder so that no other person can see the uid
+                'token':default_token_generator.make_token(user),
+            })
+            to_email=email
+            send_email=EmailMessage(mail_subject,message,to=[to_email]) #this is to send the email, what to send, where to send
+            send_email.send()
+
+            messages.success(request,'Password reset email has been sent to your email address.')
+            return redirect('login')
+
+
+        else:
+            messages.error(request,'Account does not exist.')    
+            return redirect('forgotPassword')
+    return render(request,'accounts/forgotPassword.html')
+    
+def resetpassword_validate(request,uidb64,token):
+    try:
+        uid=urlsafe_base64_decode(uidb64).decode()
+        user=Account._default_manager.get(pk=uid)
+    except(TypeError,ValueError,OverflowError,Account.DoesNotExist):
+        user=None
+
+    if user is not None and default_token_generator.check_token(user,token):
+        request.session["uid"]=uid
+        messages.success(request,'Please reset your password')
+        return redirect('resetPassword')
+    else:
+        messages.error(request,"This link has been expired")
+        return redirect('login')
+
+
+def resetPassword(request):
+    return render(render,'resetPassword.html')

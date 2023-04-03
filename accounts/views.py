@@ -110,7 +110,7 @@ def forgotPassword(request):
     if request.method=='POST':
         email=request.POST["email"]
         if Account.objects.filter(email=email).exists():
-            user=Account.objects.get(email__exact=email)
+            user=Account.objects.get(email__exact=email) #if the email is being enter is exact similar to email in our database
 
             #resetpassword email
             current_site=get_current_site(request)
@@ -151,4 +151,20 @@ def resetpassword_validate(request,uidb64,token):
 
 
 def resetPassword(request):
-    return render(render,'resetPassword.html')
+    if request.method=='POST':
+        password=request.POST['password']
+        confirm_password=request.POST['confirm_password']
+
+        if password==confirm_password:
+            uid=request.session.get('uid')
+            user=Account.objects.get(pk=uid)
+            user.set_password(password) #here set password is in build function in django which let us use save the updated password in database automatically in hased format
+            user.save()
+            messages.success(request,'Password reset successful')
+            return redirect('login')
+
+        else:
+            messages.error(request,'Password do not match')
+            return redirect('resetPassword')
+
+    return render(request,'accounts/resetPassword.html')

@@ -5,6 +5,7 @@ from django.contrib import messages,auth
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from carts.models import Cart,CartItem
 
 #verrifications email 
 from django.contrib.sites.shortcuts import get_current_site
@@ -13,6 +14,8 @@ from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
+
+from carts.views import _cart_id
 
 # Create your views here.
 
@@ -67,6 +70,20 @@ def login(request):
 
 
         if user is not None:
+            try: #here this try and except block is because when non loggedin user add something and then to checkout they login
+                print("entering inside try block") #the session must pass the cart id so that it can be added to the user loggedin
+                cart=Cart.objects.get(cart_id=_cart_id(request))
+                is_cart_item_exists=CartItem.objects.filter(cart=cart).exists()
+
+                if is_cart_item_exists:
+                    cart_item=CartItem.objects.filter(cart=cart)
+
+                    for item in cart_item:
+                        item.user=user
+                        item.save()
+
+            except:
+                pass
             auth.login(request,user)
             #messages.success(request,"you're now logged in")
             return redirect('dashboard')

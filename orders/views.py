@@ -9,6 +9,7 @@ from .models import Payment,Order,OrderProduct
 from store.models import Product
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from decouple import config
 
 
 # Create your views here.
@@ -28,7 +29,7 @@ def payment(request):
 
 
    headers = {
-  'Authorization': 'Key test_secret_key_75e2a1f970ba44ed933a5383475eef0b'
+  'Authorization': config('KHALTI_SECRET_KET')
     }
 
    response = requests.post(url, payload, headers = headers)
@@ -172,6 +173,8 @@ def place_order(request, total=0, quantity=0):
             data.order_number = order_number
             data.save()
 
+            khalti_public_key=config('KHALTI_PUBLIC_KET')
+
             order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
             context = {
                 'order': order,
@@ -179,6 +182,7 @@ def place_order(request, total=0, quantity=0):
                 'total': total,
                 'tax': tax,
                 'grand_total': grand_total,
+                'khalti_public_key':khalti_public_key
             }
 
             return render(request, 'orders/payments.html', context)

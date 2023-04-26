@@ -7,6 +7,9 @@ import requests,json
 from django.views.decorators.csrf import csrf_protect
 from .models import Payment,Order,OrderProduct
 from store.models import Product
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+
 
 # Create your views here.
 def payment(request):
@@ -101,6 +104,15 @@ def payment(request):
 
 
    #Send email to customer
+
+   mail_subject="Your order has been confirmed."
+   message=render_to_string('orders/order_received_email.html',{
+                'user':request.user,
+                'order':order,
+            })
+   to_email=request.user.email
+   send_email=EmailMessage(mail_subject,message,to=[to_email]) #this is to send the email, what to send, where to send
+   send_email.send()
 
 
    # Send order number and transcation id to frontend

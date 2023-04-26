@@ -5,7 +5,8 @@ from .forms import OrderForm,Order
 import datetime
 import requests,json
 from django.views.decorators.csrf import csrf_protect
-from .models import Payment
+from .models import Payment,Order,OrderProduct
+from store.models import Product
 
 # Create your views here.
 def payment(request):
@@ -24,7 +25,7 @@ def payment(request):
 
 
    headers = {
-  'Authorization': 'Key live_secret_key_1206ace4a52e414393b1fd1da1df1deb'
+  'Authorization': 'Key test_secret_key_75e2a1f970ba44ed933a5383475eef0b'
     }
 
    response = requests.post(url, payload, headers = headers)
@@ -36,35 +37,75 @@ def payment(request):
       response = JsonResponse({'status':'false','message':response_data['detail']}, status=500)
       return response
 
-#    import pprint 
-#    pp = pprint.PrettyPrinter(indent=4)
-#    pp.pprint(response_data)
+   import pprint 
+   pp = pprint.PrettyPrinter(indent=4)
+   pp.pprint(response_data)
 
    print(response_data)
    
 
-#    order=Order.objects.get(user=request.user,is_ordered=False,order_number='2jwzDS9wkxbkDFquJqfAEC')
-
+   order=Order.objects.get(user=request.user,is_ordered=False,order_number=response_data['product_identity'])
+#    print(order)
    #storeing the payment data in the database
 
 #    print(request.user,order.order_total)
 #    print(response_data['idx'])
 
 
-#    payment=Payment(
-#        user=request.user,
-#        payment_id=response_data['idx'],
-#        payment_method='With Khalti',
-#        amount_paid=order.order_total,
-#        status='completed',
-#    )
-#    payment.save()
+   payment=Payment(
+       user=request.user,
+       payment_id=response_data['idx'],
+       payment_method='With Khalti',
+       amount_paid=order.order_total,
+       status='completed',
+   )
+   payment.save()
 
-#    order.payment=payment
-#    order.is_ordered=True
-#    order.save()
+   order.payment=payment
+   order.is_ordered=True
+   order.save()
 
-#    return JsonResponse(f"Payment Done !! With IDX. {response_data['user']['idx']}",safe=False)
+
+   # Moves the cart items to order product table
+   cart_items = CartItem.objects.filter(user=request.user)
+   for item in cart_items:
+    orderproduct = OrderProduct()
+    orderproduct.order_id = order.id
+    orderproduct.payment = payment
+    orderproduct.user_id = request.user.id
+    orderproduct.product_id = item.product_id
+    orderproduct.quantity = item.quantity
+    orderproduct.product_price = item.product.price
+    orderproduct.ordered = True
+    orderproduct.save()
+
+       #We did not do anything for variations ebacause it is many to many fields in cart model
+       #in many to many fields we need to first save and then only assign the value
+    cart_item=CartItem.objects.get(id=item.id)
+    product__variations=cart_item.variations.all()
+    orderproduct=OrderProduct.objects.get(id=orderproduct.id)
+    orderproduct.variations.set(product__variations)
+    orderproduct.save()
+
+
+
+   # Reduce the quantity of the sold product
+    product=Product.objects.get(id=item.product.id)
+    product.stock=product.stock -item.quantity
+    product.save()
+
+
+
+   #Clear the cart
+   CartItem.objects.filter(user=request.user).delete()
+
+
+   #Send email to customer
+
+
+   # Send order number and transcation id to frontend
+
+   return JsonResponse(f"Payment Done !! With IDX. {response_data['user']['idx']}",safe=False)
    return render(request,'orders/payments.html')
 
 

@@ -95,6 +95,7 @@
   <!--This script is for khalti payment-->
 {% csrf_token %}
 <script>
+  var redirect_url="{%url 'order_complete'%}"
   function verifyPayment(payload) {
     var csrf_token = $('input[name="csrfmiddlewaretoken"]').val();
     $.ajax({
@@ -105,7 +106,7 @@
         },
         data: payload,
         dataType: 'json',
-        success: function (response) { alert(response) },
+        success: function (response) { window.location.href=redirect_url;},
         error: function (error) { alert(error.responseJSON['message']) }
     });
 }

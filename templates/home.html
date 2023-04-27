@@ -26,6 +26,30 @@
 
 	
 <div class="row">
+	{% for product in recommended_products%}    <!--Here we use forloops to show the product that is availabe in the database so for loop-->
+	<div class="col-md-3">
+		<div class="card card-product-grid">
+			<a href="{{product.get_url}}" class="img-wrap"> <img src="{{product.images.url}}"> </a>
+			<figcaption class="info-wrap">
+				<a href="{{product.get_url}}" class="title">{{product.product_name}}</a>
+				<div class="price mt-1">NRP{{product.price}}</div> <!-- price-wrap.// -->
+			</figcaption>
+		</div>
+	</div> <!-- col.// -->
+	{% endfor %}
+
+	{% for product in all_products%}    <!--Here we use forloops to show the product that is availabe in the database so for loop-->
+	<div class="col-md-3">
+		<div class="card card-product-grid">
+			<a href="{{product.get_url}}" class="img-wrap"> <img src="{{product.images.url}}"> </a>
+			<figcaption class="info-wrap">
+				<a href="{{product.get_url}}" class="title">{{product.product_name}}</a>
+				<div class="price mt-1">NRP{{product.price}}</div> <!-- price-wrap.// -->
+			</figcaption>
+		</div>
+	</div> <!-- col.// -->
+	{% endfor %}
+
 	{% for product in products%}    <!--Here we use forloops to show the product that is availabe in the database so for loop-->
 	<div class="col-md-3">
 		<div class="card card-product-grid">

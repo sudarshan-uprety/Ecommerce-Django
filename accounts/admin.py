@@ -12,7 +12,6 @@ class AccountAdmin(
         "email",
         "first_name",
         "last_name",
-        "username",
         "last_login",
         "date_joined",
         "is_active",

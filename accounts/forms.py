@@ -11,7 +11,7 @@ class RegestrationForm(forms.ModelForm):
             }
         )
     )
-    confirm_password = forms.CharField(
+    password2 = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
                 "placeholder": "Confirm Password",
@@ -40,7 +40,7 @@ class RegestrationForm(forms.ModelForm):
     ):  # this function will check if the password and confirm password are same or not.
         cleaned_data = super(RegestrationForm, self).clean()
         password = cleaned_data.get("password")
-        confirm_password = cleaned_data.get("confirm_password")
+        password2 = cleaned_data.get("password2")
 
-        if password != confirm_password:
+        if password != password2:
             raise forms.ValidationError("Password doesnot match!")

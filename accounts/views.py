@@ -18,7 +18,70 @@ from django.core.mail import EmailMessage
 import requests
 from carts.views import _cart_id
 
+
+#inmports for django_rest_framweorks
+from rest_framework import generics,status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .serializers import UserSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+
+
+
 # Create your views here.
+
+#Generating token manually
+class Register(generics.GenericAPIView):
+    serializer_class=UserSerializer
+
+    def post(self,request):
+        serializer=UserSerializer(data=request.data)
+        if not serializer.is_valid():
+            form = RegestrationForm(request.POST)
+            context = {"form": form}
+            return self.get(request, context=context)
+
+        email=serializer.validated_data['email']
+        password=serializer.validated_data['password']
+
+
+        validated_data=serializer.validated_data
+        validated_data.pop('password2')
+        user=Account(**validated_data)
+        user.set_password(password)
+        user.save()
+
+        #User activation
+        current_site = get_current_site(request)
+        mail_subject = "Please activate your account"
+        message = render_to_string(
+                "accounts/account_verification_email.html",
+                {
+                    "user": user,
+                    "domain": current_site,
+                    "uid": urlsafe_base64_encode(
+                        force_bytes(user.pk)
+                    ),  # this is to encode the uid by the encoder so that no other person can see the uid
+                    "token": default_token_generator.make_token(user),
+                },
+        )
+        to_email = email
+        send_email = EmailMessage(
+            mail_subject, message, to=[to_email]
+        )  # this is to send the email, what to send, where to send
+        send_email.send()
+        messages.success(
+            request,
+                "Registration success. Please use the activation link to continue.",
+        )
+
+        return redirect("/accounts/login/?command=verification&email=" + email)
+
+    def get(self,request, context=None):
+        form = RegestrationForm()
+        context = context or {"form": form}
+        return render(request, "accounts/register.html", context)
+
 
 
 def register(request):

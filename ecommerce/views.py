@@ -2,7 +2,11 @@ from django.shortcuts import render
 from store.models import Product
 from carts.models import Cart,CartItem
 from category.models import Category
-from itertools import chain
+
+#inmports for drf
+from rest_framework import generics,status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
 
 def home(request):

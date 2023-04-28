@@ -17,4 +17,3 @@ To run this project on your local machine, please follow the steps given below:
     That's it! You should now be able to run this Django e-commerce project on your local machine. 
     
     If you encounter any issues, feel free to contact me
-test1

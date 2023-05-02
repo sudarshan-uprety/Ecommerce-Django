@@ -2,15 +2,16 @@ from django.urls import path
 from . import views
 
 #for django_rest_framework 
-from .views import Register
+from .views import Register,Login
 
 urlpatterns = [
     # path("register/", views.register, name="register"),
     #for drf
     
-    path('drfregister',Register.as_view(),name='register'),
+    path('register/',Register.as_view(),name='register'),
 
-    path("login/", views.login, name="login"),
+    # path("login/", views.login, name="login"),
+    path('login/',Login.as_view(),name='login'),
     path("logout/", views.logout, name="logout"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("", views.dashboard, name="dashboard"),

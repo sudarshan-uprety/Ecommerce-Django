@@ -11,7 +11,7 @@
           <article class="card-body">
              {%include 'includes/alerts.html'%}
             <header class="mb-4"><h4 class="card-title">Sign up</h4></header>
-            <form action="http://127.0.0.1:8000/accounts/drfregister" method="POST">
+            <form action="http://127.0.0.1:8000/accounts/register/" method="POST">
                 {%csrf_token%}
                     <div class="form-row">
                         <div class="col form-group">

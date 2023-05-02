@@ -23,12 +23,20 @@ from carts.views import _cart_id
 from rest_framework import generics,status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .serializers import UserSerializer
+from .serializers import UserSerializer,LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
 
 # Create your views here.
+
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
 
 #Generating token manually
 class Register(generics.GenericAPIView):
@@ -141,6 +149,85 @@ def register(request):
         "form": form,
     }
     return render(request, "accounts/register.html", context)
+
+
+class Login(generics.GenericAPIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.data.get('email')
+        password = serializer.data.get('password')
+        user = auth.authenticate(email=email, password=password)
+        
+        if user is not None:
+            try:
+                # Here this try and except block is because when non-logged-in user adds something and then to checkout they login
+                # the session must pass the cart id so that it can be added to the logged-in user's cart
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+                    product_variation = []
+
+                    # Here we are getting the product variations by cart id
+                    for item in cart_item:
+                        variations = item.variations.all()
+                        product_variation.append(list(variations))
+
+                    # Get the cart items from the user to access his product variations
+                    cart_item = CartItem.objects.filter(user=user)
+                    ex_var_list = []
+                    id = []
+                    for item in cart_item:
+                        existing_variations = item.variations.all()
+                        ex_var_list.append(list(existing_variations))
+                        id.append(item.id)
+
+                    for pr in product_variation:
+                        if pr in ex_var_list:
+                            index = ex_var_list.index(pr)
+                            item_id = id[index]
+                            item = CartItem.objects.get(id=item_id)
+                            item.quantity += 1
+                            item.user = user
+                            item.save()
+
+                        else:
+                            cart_item = CartItem.objects.filter(cart=cart)
+                            for item in cart_item:
+                                item.user = user
+                                item.save()
+
+            except:
+                pass
+
+            auth.login(request, user)
+            messages.success(request, "You are now logged in!")
+            url = request.META.get("HTTP_REFERER")
+            try:
+                query = requests.utils.urlparse(url).query
+                # query = next=/cart/checkout/
+                params = dict(x.split("=") for x in query.split("&"))
+                # params = {'next': '/cart/checkout/'}
+                if "next" in params:
+                    nextpage = params["next"]
+                    return redirect(nextpage)
+
+            except:
+                return redirect("dashboard")
+        else:
+            messages.error(request, "Invalid login details")
+            return redirect("http://127.0.0.1:8000/accounts/login/")
+                
+    def get(self, request):
+        return render(request, 'accounts/login.html')
+
+
+
+
 
 
 def login(request):

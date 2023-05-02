@@ -32,3 +32,16 @@ class UserSerializer(serializers.ModelSerializer):
         if data['password'] != data['password2']:
             raise serializers.ValidationError("Passwords do not match")
         return data
+    
+
+class LoginSerializer(serializers.ModelSerializer):
+    email=serializers.EmailField(max_length=255)
+
+    class Meta:
+        model=Account
+        fields=['email','password']
+
+    # def validate(self,data):
+    #     if data['email']=="" or data['password']=="":
+    #         raise serializers.ValidationError('Fields can not be empty')
+    #     return Response({"error":"Sorry wrong credentials"})

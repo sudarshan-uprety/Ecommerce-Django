@@ -25,8 +25,8 @@
           <div class="card-body">
           <h4 class="card-title mb-4">Sign in</h4>
             {%include 'includes/alerts.html'%}
-          <form action="{%url 'login'%}" method="POST">
-            {%csrf_token%}
+            <form action="http://127.0.0.1:8000/accounts/login/" method="POST">            {%csrf_token%}
+              {% csrf_token %}
               <div class="form-group">
                  <input type="email" class="form-control" placeholder="Email Address" name="email">
               </div> <!-- form-group// -->

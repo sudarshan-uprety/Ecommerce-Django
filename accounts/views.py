@@ -283,7 +283,7 @@ def login(request):
 
             except:
                 pass
-            auth.login(request, user)
+            authenticate.login(request, user)
             messages.success(request, "You are now logged in!")
             url = request.META.get("HTTP_REFERER")
             try:
@@ -328,7 +328,7 @@ def activate(request, uidb64, token):
         return redirect("register")
 
 
-@login_required(login_url="login")
+@login_required(login_url="https://127.0.0.1:8000/accounts/login/")
 def dashboard(request):
     return render(request, "accounts/dashboard.html")
 

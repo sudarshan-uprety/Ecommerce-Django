@@ -73,7 +73,13 @@
             errorDiv.textContent = data.error;
             errorDiv.classList.remove("d-none");
         }
+        
+        if (data.token){
+            await window.localStorage.setItem("token", JSON.stringify(data.token));
+        }
+        
     }
+
 
     const form = document.getElementById("login-form");
     form.onsubmit = (e) => {

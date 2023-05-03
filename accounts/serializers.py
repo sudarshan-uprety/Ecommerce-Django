@@ -25,13 +25,13 @@ class UserSerializer(serializers.ModelSerializer):
         user=Account.objects.create(
             first_name=validated_data['first_name'],last_name=validated_data['last_name'],username=validated_data['username'],email=validated_data['email'],password=validated_data['password']
         )
-        user.save()
         return user
     
-    def validate(self, data):
-        if data['password'] != data['password2']:
-            raise serializers.ValidationError("Passwords do not match")
-        return data
+    # def validate(self, data):
+    #     if data['password'] != data['password2']:
+    #         # raise serializers.ValidationError("Passwords do not match")
+    #         return Response({"error":"password and confirm password do not match"})
+    #     return data
     
 
 class LoginSerializer(serializers.ModelSerializer):

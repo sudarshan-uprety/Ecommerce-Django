@@ -1,56 +1,84 @@
+
 {%extends 'base.html'%}
 
 {%block content%}
 
 <section class="section-conten padding-y" style="min-height:84vh">
-
     <!-- ============================ COMPONENT LOGIN   ================================= -->
-    
     {% if request.GET.command == 'verification' %}
-
-    <div class="container mx-auto alert alert-info text-center" role="alert" style="max-width: 380px; margin-top:100px;">
-
-      We have sent you a verification email to {{request.GET.email}}, please use that email to activate your account.
-      <br>
-      Already verified? <a href="{%url 'login'%}">Login</a>
-      <br>
-
-
-    </div>
-
+        <div class="container mx-auto alert alert-info text-center" role="alert" style="max-width: 380px; margin-top:100px;">
+            We have sent you a verification email to {{request.GET.email}}, please use that email to activate your account.
+            <br>
+            Already verified? <a href="{%url 'login'%}">Login</a>
+            <br>
+        </div>
     {%else%}
-
-
         <div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
-          <div class="card-body">
-          <h4 class="card-title mb-4">Sign in</h4>
-            {%include 'includes/alerts.html'%}
-            <form action="http://127.0.0.1:8000/accounts/login/" method="POST">            {%csrf_token%}
-              {% csrf_token %}
-              <div class="form-group">
-                 <input type="email" class="form-control" placeholder="Email Address" name="email">
-              </div> <!-- form-group// -->
-              <div class="form-group">
-                <input type="password" class="form-control" placeholder="Password" name="password">
-              </div> <!-- form-group// -->
-              
-              <div class="form-group">
-                  <a href="{%url 'forgotPassword'%}" class="float-right">Forgot password?</a> 
-               
-              </div> <!-- form-group form-check .// -->
-              <div class="form-group">
-                  <button type="submit" class="btn btn-primary btn-block"> Login  </button>
-              </div> <!-- form-group// -->    
-          </form>
-          </div> <!-- card-body.// -->
-        </div> <!-- card .// -->
-    
-         <p class="text-center mt-4">Don't have account? <a href="{%url 'register'%}">Sign up</a></p>
-         <br><br>
-    <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
-    
-    {%endif%}
-    </section>
+            <div class="card-body">
+                <h4 class="card-title mb-4">Sign in</h4>
+                {% include 'includes/alerts.html' %}
+                <form id="login-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="email" class="form-control" placeholder="Email Address" name="email">
+                    </div>
+                    <!-- form-group// -->
+                    <div class="form-group">
+                        <input type="password" class="form-control" placeholder="Password" name="password">
+                    </div>
+                    <!-- form-group// -->
+                    <div class="form-group">
+                        <a href="{%url 'forgotPassword'%}" class="float-right">Forgot password?</a>
+                    </div>
+                    <!-- form-group form-check .// -->
+                    <div class="form-group">
+                        <button type="submit" id="submit" class="btn btn-primary btn-block"> Login </button>
+                    </div>
+                    <!-- form-group// -->
+                </form>
+                <div id="error-div" class="alert alert-danger d-none"></div>
+            </div>
+            <!-- card-body.// -->
+        </div>
+        <!-- card .// -->
+        <p class="text-center mt-4">Don't have account? <a href="{%url 'register'%}">Sign up</a></p>
+        <br><br>
+    {% endif %}
+</section>
+<script>
+    const callApi = async () => {
+        const form = document.getElementById("login-form");
+        const email = form.elements["email"].value;
+        const password = form.elements["password"].value;
 
+        const outgoing = {
+            email: email,
+            password: password
+        };
 
+        const res = await fetch("http://127.0.0.1:8000/accounts/login/", {
+            method: "POST",
+            body: JSON.stringify(outgoing),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+        });
+
+        const data = await res.json();
+        console.log(data);
+
+        if (data.error) {
+            const errorDiv = document.getElementById("error-div");
+            errorDiv.textContent = data.error;
+            errorDiv.classList.remove("d-none");
+        }
+    }
+
+    const form = document.getElementById("login-form");
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        callApi();
+    }
+</script>
 {%endblock%}

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from carts.models import Cart, CartItem
 from orders.models import Order, OrderProduct
+from accounts.models import Account
 
 # verrifications email
 from django.contrib.sites.shortcuts import get_current_site
@@ -25,6 +26,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer,LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth import authenticate
 
 
 
@@ -44,20 +46,20 @@ class Register(generics.GenericAPIView):
 
     def post(self,request):
         serializer=UserSerializer(data=request.data)
-        if not serializer.is_valid():
-            form = RegestrationForm(request.POST)
-            context = {"form": form}
-            return self.get(request, context=context)
-
-        email=serializer.validated_data['email']
+        serializer.is_valid(raise_exception=True)
         password=serializer.validated_data['password']
-
-
+        password2=serializer.validated_data['password2']
+        if password!=password2:
+            return Response({"error":"passsword and confirm password do not match"},status=401)
         validated_data=serializer.validated_data
         validated_data.pop('password2')
         user=Account(**validated_data)
         user.set_password(password)
+        user.is_active=True
         user.save()
+        # return Response({"ststus":"User registered successfully"},status=201)
+
+
 
         #User activation
         current_site = get_current_site(request)
@@ -73,7 +75,7 @@ class Register(generics.GenericAPIView):
                     "token": default_token_generator.make_token(user),
                 },
         )
-        to_email = email
+        to_email = validated_data['email']
         send_email = EmailMessage(
             mail_subject, message, to=[to_email]
         )  # this is to send the email, what to send, where to send
@@ -83,12 +85,11 @@ class Register(generics.GenericAPIView):
                 "Registration success. Please use the activation link to continue.",
         )
 
-        return redirect("/accounts/login/?command=verification&email=" + email)
+        # return redirect("/accounts/login/?command=verification&email=" + email)
+        return Response({"success":"You have been registered"})
 
-    def get(self,request, context=None):
-        form = RegestrationForm()
-        context = context or {"form": form}
-        return render(request, "accounts/register.html", context)
+    def get(self,request):
+        return render(request, "accounts/register.html")
 
 
 
@@ -159,13 +160,15 @@ class Login(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         email = serializer.data.get('email')
         password = serializer.data.get('password')
-        user = auth.authenticate(email=email, password=password)
+        user = authenticate(email=email, password=password)
         
         if user is not None:
+            token=get_tokens_for_user(user)
             try:
                 # Here this try and except block is because when non-logged-in user adds something and then to checkout they login
                 # the session must pass the cart id so that it can be added to the logged-in user's cart
                 cart = Cart.objects.get(cart_id=_cart_id(request))
+                print(cart)
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
 
                 if is_cart_item_exists:
@@ -204,8 +207,8 @@ class Login(generics.GenericAPIView):
             except:
                 pass
 
-            auth.login(request, user)
-            messages.success(request, "You are now logged in!")
+            # auth.login(request, user)
+            # messages.success(request, "You are now logged in!")
             url = request.META.get("HTTP_REFERER")
             try:
                 query = requests.utils.urlparse(url).query
@@ -217,10 +220,12 @@ class Login(generics.GenericAPIView):
                     return redirect(nextpage)
 
             except:
-                return redirect("dashboard")
+                return Response({"success":"you are now loggedin","token":token})
+                # return redirect("dashboard")
         else:
-            messages.error(request, "Invalid login details")
-            return redirect("http://127.0.0.1:8000/accounts/login/")
+            # messages.error(request, "Invalid login details")
+            return Response({"error":"Sorry worng username or password"},status=404)
+            # return redirect("http://127.0.0.1:8000/accounts/login/")
                 
     def get(self, request):
         return render(request, 'accounts/login.html')

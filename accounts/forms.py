@@ -31,6 +31,8 @@ class RegestrationForm(forms.ModelForm):
         self.fields["phone_number"].widget.attrs["placeholder"] = "Enter Phone Number"
         self.fields["email"].widget.attrs["placeholder"] = "Enter your email"
         self.fields["password"].widget.attrs["placeholder"] = "Enter password"
+        self.fields["password2"].widget.attrs["placeholder"] = "Confirm Password"
+
 
         for field in self.fields:
             self.fields[field].widget.attrs["class"] = "form-control"
@@ -44,3 +46,4 @@ class RegestrationForm(forms.ModelForm):
 
         if password != password2:
             raise forms.ValidationError("Password doesnot match!")
+        return cleaned_data

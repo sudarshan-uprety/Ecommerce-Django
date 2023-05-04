@@ -12,10 +12,10 @@ urlpatterns = [
 
     # path("login/", views.login, name="login"),
     path('login/',Login.as_view(),name='login'),
-    path("logout/", views.logout, name="logout"),
+    path("logout/", views.LogoutView.as_view(), name="logout"),
     path("dashboard/", views.dashboard, name="dashboard"),
     path("", views.dashboard, name="dashboard"),
-    path("activate/<uidb64>/<token>/", views.activate, name="activate"),
+    path("activate/<uidb64>/<token>/", views.ActivateAccountAPIView.as_view(), name="activate"),
     path("forgotPassword", views.forgotPassword, name="forgotPassword"),
     path(
         "resetpassword_validate/<uidb64>/<token>/",

@@ -26,7 +26,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from .serializers import UserSerializer,LoginSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate,logout
 
 
 
@@ -161,48 +161,48 @@ class Login(generics.GenericAPIView):
         email = serializer.data.get('email')
         password = serializer.data.get('password')
         user = authenticate(email=email, password=password)
-        
         if user is not None:
+            user_cart=Account.objects.filter(email=email).values('id')
+            print(user_cart)
             token=get_tokens_for_user(user)
             try:
                 # Here this try and except block is because when non-logged-in user adds something and then to checkout they login
                 # the session must pass the cart id so that it can be added to the logged-in user's cart
                 cart = Cart.objects.get(cart_id=_cart_id(request))
-                print(cart)
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
 
-                if is_cart_item_exists:
-                    cart_item = CartItem.objects.filter(cart=cart)
-                    product_variation = []
+                # if is_cart_item_exists:
+                #     cart_item = CartItem.objects.filter(cart=cart)
+                #     product_variation = []
 
-                    # Here we are getting the product variations by cart id
-                    for item in cart_item:
-                        variations = item.variations.all()
-                        product_variation.append(list(variations))
+                #     # Here we are getting the product variations by cart id
+                #     for item in cart_item:
+                #         variations = item.variations.all()
+                #         product_variation.append(list(variations))
 
-                    # Get the cart items from the user to access his product variations
-                    cart_item = CartItem.objects.filter(user=user)
-                    ex_var_list = []
-                    id = []
-                    for item in cart_item:
-                        existing_variations = item.variations.all()
-                        ex_var_list.append(list(existing_variations))
-                        id.append(item.id)
+                #     # Get the cart items from the user to access his product variations
+                #     cart_item = CartItem.objects.filter(user=user)
+                #     ex_var_list = []
+                #     id = []
+                #     for item in cart_item:
+                #         existing_variations = item.variations.all()
+                #         ex_var_list.append(list(existing_variations))
+                #         id.append(item.id)
 
-                    for pr in product_variation:
-                        if pr in ex_var_list:
-                            index = ex_var_list.index(pr)
-                            item_id = id[index]
-                            item = CartItem.objects.get(id=item_id)
-                            item.quantity += 1
-                            item.user = user
-                            item.save()
+                #     for pr in product_variation:
+                #         if pr in ex_var_list:
+                #             index = ex_var_list.index(pr)
+                #             item_id = id[index]
+                #             item = CartItem.objects.get(id=item_id)
+                #             item.quantity += 1
+                #             item.user = user
+                #             item.save()
 
-                        else:
-                            cart_item = CartItem.objects.filter(cart=cart)
-                            for item in cart_item:
-                                item.user = user
-                                item.save()
+                #         else:
+                #             cart_item = CartItem.objects.filter(cart=cart)
+                #             for item in cart_item:
+                #                 item.user = user
+                #                 item.save()
 
             except:
                 pass
@@ -224,7 +224,7 @@ class Login(generics.GenericAPIView):
                 # return redirect("dashboard")
         else:
             # messages.error(request, "Invalid login details")
-            return Response({"error":"Sorry worng username or password"},status=404)
+            return Response({"error":"Sorry worng email or password"},status=404)
             # return redirect("http://127.0.0.1:8000/accounts/login/")
                 
     def get(self, request):
@@ -304,12 +304,12 @@ def login(request):
     return render(request, "accounts/login.html")
 
 
-@login_required(login_url="login")
-def logout(request):
-    auth.logout(request)
-    messages.success(request, "You're logged out.")
-    return redirect("login")
 
+class LogoutView(generics.GenericAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        pass
 
 def activate(request, uidb64, token):
     try:
@@ -326,6 +326,26 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, "Invalid activation link.")
         return redirect("register")
+
+
+class ActivateAccountAPIView(generics.GenericAPIView):
+    permission_classes=[]
+
+    def get(self,request,uidb64,token):
+        try:
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = Account._default_manager.get(pk=uid)
+        except (TypeError, ValueError, OverflowError, Account.DoesNotExist):
+            user = None
+
+        if user is not None and default_token_generator.check_token(user, token):
+            user.is_active = True
+            user.save()
+            messages.success(request, "Congratulation! Your account is activated")
+            return redirect("login")
+        else:
+            messages.error(request, "Invalid activation link.")
+            return redirect("register")
 
 
 @login_required(login_url="https://127.0.0.1:8000/accounts/login/")

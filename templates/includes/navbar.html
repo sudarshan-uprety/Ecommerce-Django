@@ -43,25 +43,23 @@
         </div> <!-- col.// -->
         <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
                     <div class="d-flex justify-content-end mb-3 mb-lg-0">
-                        {%if user.id is None%}
+                        
                         <div class="widget-header">
-                            <small class="title text-muted">Welcome guest!</small>
+                            {% comment %} <small class="title text-muted">Welcome guest!</small> {% endcomment %}
                             <div> 
                                 <a href="http://127.0.0.1:8000/accounts/login/">Sign in</a> <span class="dark-transp"> | </span>
                                 <a href="http://127.0.0.1:8000/accounts/register/"> Register</a>
                             </div>
                         </div>
-                        {%else%}
 
                         <div class="widget-header">
-                            <small class="title text-muted">Welcome {{user.first_name}}</small>
-                            <div> 
-                                <a href="{%url 'dashboard'%}">Profile</a> <span class="dark-transp"> | </span>
-                                <a href="{%url 'logout'%}"> Logout</a>
+                            {% comment %} <small class="title text-muted">Welcome {{user.first_name}}</small> {% endcomment %}
+                            <div id="logged-in"> 
+                                <button class='btn' id="profile" type="submit">Profile</a>
+                                <button class='btn' id="logout" type="submit">logout</button>
                             </div>
                         </div>
 
-                        {%endif%}
                         <a href="{%url 'cart'%}" class="widget-header pl-3 ml-3">
                             <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
                             <span class="badge badge-pill badge-danger notify">{{cart_count}}</span>
@@ -77,3 +75,66 @@
     
     </header> <!-- section-header.// -->
     
+<script>
+    var token1=localStorage.getItem('token');
+    console.log(token1)
+    const logoutAPI = async () => {
+        const token = localStorage.getItem("token");
+        const logout = document.getElementById("logout");
+        refresh_token=JSON.parse(token).refresh;
+        access_token=JSON.parse(token).access;
+        const outgoing = {
+            refresh: refresh_token
+            //access:JSON.parse(token).access
+        };
+
+        const res= await fetch("http://127.0.0.1/accounts/logout",{
+            method:"POST",
+            body:outgoing,
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer'+access_token
+        }
+        });
+
+        const data =await res.json();
+
+        console.log(refresh_token);
+        //console.log(access_token);
+
+        if (data.error){
+            console.log(data.error);
+        }
+        if (data.success){
+            console.log(data.success)
+        }
+
+
+    };
+
+
+
+    const logout_button=document.getElementById("logout");
+    const widgetHeader=document.querySelector('.widget-header');
+    const loggInButtons=document.querySelector("#logged-in");
+console.log(loggInButtons,'logged in')
+
+if(token1){
+widgetHeader.style.display='none';
+loggInButtons.style.display='flex';
+
+}else{
+    loggInButtons.style.display='none';
+
+
+}
+
+    logout_button.onclick=(e)=>{
+        e.preventDefault();
+        //logoutAPI();
+        localStorage.removeItem("token");
+        document.location.reload();   
+    }
+
+</script>

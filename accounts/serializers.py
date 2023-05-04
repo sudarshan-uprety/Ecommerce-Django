@@ -39,7 +39,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Account
-        fields=['email','password']
+        fields=['email','password',"id"]
 
     # def validate(self,data):
     #     if data['email']=="" or data['password']=="":

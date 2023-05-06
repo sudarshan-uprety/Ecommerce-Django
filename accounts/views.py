@@ -93,63 +93,63 @@ class Register(generics.GenericAPIView):
 
 
 
-def register(request):
-    if request.method == "POST":
-        form = RegestrationForm(request.POST)
-        if form.is_valid():
-            first_name = form.cleaned_data[
-                "first_name"
-            ]  # when we use django form we need to use cleaned_data to extract form the frontend
-            last_name = form.cleaned_data["last_name"]
-            email = form.cleaned_data["email"]
-            phone_number = form.cleaned_data["phone_number"]
-            password = form.cleaned_data["password"]
-            username = email.split("@")[0]
+# def register(request):
+#     if request.method == "POST":
+#         form = RegestrationForm(request.POST)
+#         if form.is_valid():
+#             first_name = form.cleaned_data[
+#                 "first_name"
+#             ]  # when we use django form we need to use cleaned_data to extract form the frontend
+#             last_name = form.cleaned_data["last_name"]
+#             email = form.cleaned_data["email"]
+#             phone_number = form.cleaned_data["phone_number"]
+#             password = form.cleaned_data["password"]
+#             username = email.split("@")[0]
 
-            user = Account.objects.create_user(
-                first_name=first_name,
-                last_name=last_name,
-                email=email,
-                username=username,
-                password=password,
-            )  # this will call the create_user function which is under accounts/mode.py/MyAccountManager class
-            user.phone_number = phone_number
-            user.save()
+#             user = Account.objects.create_user(
+#                 first_name=first_name,
+#                 last_name=last_name,
+#                 email=email,
+#                 username=username,
+#                 password=password,
+#             )  # this will call the create_user function which is under accounts/mode.py/MyAccountManager class
+#             user.phone_number = phone_number
+#             user.save()
 
-            # User activation
-            current_site = get_current_site(request)
-            mail_subject = "Please activate your account"
-            message = render_to_string(
-                "accounts/account_verification_email.html",
-                {
-                    "user": user,
-                    "domain": current_site,
-                    "uid": urlsafe_base64_encode(
-                        force_bytes(user.pk)
-                    ),  # this is to encode the uid by the encoder so that no other person can see the uid
-                    "token": default_token_generator.make_token(user),
-                },
-            )
-            to_email = email
-            send_email = EmailMessage(
-                mail_subject, message, to=[to_email]
-            )  # this is to send the email, what to send, where to send
-            send_email.send()
-            messages.success(
-                request,
-                "Regestration success. Please use the activation link to continue.",
-            )
+#             # User activation
+#             current_site = get_current_site(request)
+#             mail_subject = "Please activate your account"
+#             message = render_to_string(
+#                 "accounts/account_verification_email.html",
+#                 {
+#                     "user": user,
+#                     "domain": current_site,
+#                     "uid": urlsafe_base64_encode(
+#                         force_bytes(user.pk)
+#                     ),  # this is to encode the uid by the encoder so that no other person can see the uid
+#                     "token": default_token_generator.make_token(user),
+#                 },
+#             )
+#             to_email = email
+#             send_email = EmailMessage(
+#                 mail_subject, message, to=[to_email]
+#             )  # this is to send the email, what to send, where to send
+#             send_email.send()
+#             messages.success(
+#                 request,
+#                 "Regestration success. Please use the activation link to continue.",
+#             )
 
-            return redirect(
-                "/accounts/login/?command=verification&email=" + email
-            )  # this will show if the user came from registration form or not
-    else:
-        form = RegestrationForm()
+#             return redirect(
+#                 "/accounts/login/?command=verification&email=" + email
+#             )  # this will show if the user came from registration form or not
+#     else:
+#         form = RegestrationForm()
 
-    context = {
-        "form": form,
-    }
-    return render(request, "accounts/register.html", context)
+#     context = {
+#         "form": form,
+#     }
+#     return render(request, "accounts/register.html", context)
 
 
 class Login(generics.GenericAPIView):
@@ -235,73 +235,73 @@ class Login(generics.GenericAPIView):
 
 
 
-def login(request):
-    if request.method == "POST":
-        email = request.POST["email"]
-        password = request.POST["password"]
+# def login(request):
+#     if request.method == "POST":
+#         email = request.POST["email"]
+#         password = request.POST["password"]
 
-        user = auth.authenticate(email=email, password=password)
+#         user = auth.authenticate(email=email, password=password)
 
-        if user is not None:
-            try:  # here this try and except block is because when non loggedin user add something and then to checkout they login
-                # the session must pass the cart id so that it can be added to the user loggedin
-                cart = Cart.objects.get(cart_id=_cart_id(request))
-                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+#         if user is not None:
+#             try:  # here this try and except block is because when non loggedin user add something and then to checkout they login
+#                 # the session must pass the cart id so that it can be added to the user loggedin
+#                 cart = Cart.objects.get(cart_id=_cart_id(request))
+#                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
 
-                if is_cart_item_exists:
-                    cart_item = CartItem.objects.filter(cart=cart)
-                    product_variation = []
+#                 if is_cart_item_exists:
+#                     cart_item = CartItem.objects.filter(cart=cart)
+#                     product_variation = []
 
-                    # here we are getting the product variations by cart id
-                    for item in cart_item:
-                        variations = item.variations.all()
-                        product_variation.append(list(variations))
+#                     # here we are getting the product variations by cart id
+#                     for item in cart_item:
+#                         variations = item.variations.all()
+#                         product_variation.append(list(variations))
 
-                    # Get the cart items from the user to access his product variations
-                    cart_item = CartItem.objects.filter(user=user)
-                    ex_var_list = []
-                    id = []
-                    for item in cart_item:
-                        existing_variations = item.variations.all()
-                        ex_var_list.append(list(existing_variations))
-                        id.append(item.id)
+#                     # Get the cart items from the user to access his product variations
+#                     cart_item = CartItem.objects.filter(user=user)
+#                     ex_var_list = []
+#                     id = []
+#                     for item in cart_item:
+#                         existing_variations = item.variations.all()
+#                         ex_var_list.append(list(existing_variations))
+#                         id.append(item.id)
 
-                    for pr in product_variation:
-                        if pr in ex_var_list:
-                            index = ex_var_list.index(pr)
-                            item_id = id[index]
-                            item = CartItem.objects.get(id=item_id)
-                            item.quantity += 1
-                            item.user = user
-                            item.save()
+#                     for pr in product_variation:
+#                         if pr in ex_var_list:
+#                             index = ex_var_list.index(pr)
+#                             item_id = id[index]
+#                             item = CartItem.objects.get(id=item_id)
+#                             item.quantity += 1
+#                             item.user = user
+#                             item.save()
 
-                        else:
-                            cart_item = CartItem.objects.filter(cart=cart)
-                            for item in cart_item:
-                                item.user = user
-                                item.save()
+#                         else:
+#                             cart_item = CartItem.objects.filter(cart=cart)
+#                             for item in cart_item:
+#                                 item.user = user
+#                                 item.save()
 
-            except:
-                pass
-            authenticate.login(request, user)
-            messages.success(request, "You are now logged in!")
-            url = request.META.get("HTTP_REFERER")
-            try:
-                query = requests.utils.urlparse(url).query
-                # query = next=/cart/checkout/
-                params = dict(x.split("=") for x in query.split("&"))
-                # params = {'next': '/cart/checkout/'}
-                if "next" in params:
-                    nextpage = params["next"]
-                    return redirect(nextpage)
+#             except:
+#                 pass
+#             authenticate.login(request, user)
+#             messages.success(request, "You are now logged in!")
+#             url = request.META.get("HTTP_REFERER")
+#             try:
+#                 query = requests.utils.urlparse(url).query
+#                 # query = next=/cart/checkout/
+#                 params = dict(x.split("=") for x in query.split("&"))
+#                 # params = {'next': '/cart/checkout/'}
+#                 if "next" in params:
+#                     nextpage = params["next"]
+#                     return redirect(nextpage)
 
-            except:
-                return redirect("dashboard")
-        else:
-            messages.error(request, "Invalid login details")
-            return redirect("login")
+#             except:
+#                 return redirect("dashboard")
+#         else:
+#             messages.error(request, "Invalid login details")
+#             return redirect("login")
 
-    return render(request, "accounts/login.html")
+#     return render(request, "accounts/login.html")
 
 
 
@@ -348,9 +348,23 @@ class ActivateAccountAPIView(generics.GenericAPIView):
             return redirect("register")
 
 
-@login_required(login_url="https://127.0.0.1:8000/accounts/login/")
-def dashboard(request):
-    return render(request, "accounts/dashboard.html")
+# @login_required(login_url="https://127.0.0.1:8000/accounts/login/")
+# def dashboard(request):
+#     return render(request, "accounts/dashboard.html")
+
+class DashboardAPIView(generics.GenericAPIView):
+    permission_classes=[IsAuthenticated]
+    # serializer_class=DashBoardSerializer
+
+    def get(self,request):
+        user_id=request.user.id
+        # return Response({"success":"data","idk":user_id})
+        # serializer=DashBoardSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     return render(request,'accounts/dashboard.html')
+        # else:
+        # return Response({"error":"Sorry not loggedin"})
+        return render(request,'accounts/dashboard.html')
 
 
 def forgotPassword(request):

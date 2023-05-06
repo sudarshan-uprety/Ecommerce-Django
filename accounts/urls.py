@@ -13,8 +13,8 @@ urlpatterns = [
     # path("login/", views.login, name="login"),
     path('login/',Login.as_view(),name='login'),
     path("logout/", views.LogoutView.as_view(), name="logout"),
-    path("dashboard/", views.dashboard, name="dashboard"),
-    path("", views.dashboard, name="dashboard"),
+    path("dashboard/", views.DashboardAPIView.as_view(), name="dashboard"),
+    path("", views.DashboardAPIView.as_view, name="dashboard"),
     path("activate/<uidb64>/<token>/", views.ActivateAccountAPIView.as_view(), name="activate"),
     path("forgotPassword", views.forgotPassword, name="forgotPassword"),
     path(

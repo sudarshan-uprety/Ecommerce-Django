@@ -55,7 +55,7 @@
                         <div class="widget-header">
                             {% comment %} <small class="title text-muted">Welcome {{user.first_name}}</small> {% endcomment %}
                             <div id="logged-in"> 
-                                <button class='btn' id="profile" type="submit">Profile</a>
+                                <button class='btn' id="profile" type="submit">Profile</button>
                                 <button class='btn' id="logout" type="submit">logout</button>
                             </div>
                         </div>
@@ -77,10 +77,9 @@
     
 <script>
     var token1=localStorage.getItem('token');
-    console.log(token1)
-    const logoutAPI = async () => {
+    const profileAPI = async () => {
         const token = localStorage.getItem("token");
-        const logout = document.getElementById("logout");
+        //const logout = document.getElementById("logout");
         refresh_token=JSON.parse(token).refresh;
         access_token=JSON.parse(token).access;
         const outgoing = {
@@ -88,19 +87,18 @@
             //access:JSON.parse(token).access
         };
 
-        const res= await fetch("http://127.0.0.1/accounts/logout",{
-            method:"POST",
-            body:outgoing,
+        const res= await fetch("http://127.0.0.1:8000/accounts/dashboard/",{
+            method:"GET",
             headers:{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer'+access_token
+                'Authorization': 'Bearer '+access_token
         }
         });
 
         const data =await res.json();
 
-        console.log(refresh_token);
+        //console.log(refresh_token);
         //console.log(access_token);
 
         if (data.error){
@@ -114,7 +112,7 @@
     };
 
 
-
+    const profile_button=document.getElementById("profile");
     const logout_button=document.getElementById("logout");
     const widgetHeader=document.querySelector('.widget-header');
     const loggInButtons=document.querySelector("#logged-in");
@@ -130,11 +128,16 @@ loggInButtons.style.display='flex';
 
 }
 
+//This will call the profile api declared above.
+    profile_button.onclick=(e)=>{
+    profileAPI();
+    }
+
+//This is logout option
     logout_button.onclick=(e)=>{
         e.preventDefault();
         //logoutAPI();
         localStorage.removeItem("token");
         document.location.reload();   
     }
-
 </script>

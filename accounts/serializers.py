@@ -45,3 +45,4 @@ class LoginSerializer(serializers.ModelSerializer):
     #     if data['email']=="" or data['password']=="":
     #         raise serializers.ValidationError('Fields can not be empty')
     #     return Response({"error":"Sorry wrong credentials"})
+

@@ -47,5 +47,44 @@
         </div> <!-- row -->
     </div> <!-- container -->
 </section>
+{% comment %} <script>
+const profileAPI = async () => {
+    const token = localStorage.getItem("token");
+    //const logout = document.getElementById("logout");
+    refresh_token=JSON.parse(token).refresh;
+    access_token=JSON.parse(token).access;
+    const outgoing = {
+        refresh: refresh_token
+        //access:JSON.parse(token).access
+    };
+
+    const res= await fetch("http://127.0.0.1:8000/accounts/dashboard/",{
+        method:"GET",
+        headers:{
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer '+access_token
+    }
+    });
+
+    const data =await res.json();
+
+    console.log(refresh_token);
+    console.log(access_token);
+
+    if (data.error){
+        console.log(data.error);
+    }
+    if (data.success){
+        console.log(data.success)
+    }
+
+
+};
+
+profileAPI();
+
+</script> {% endcomment %}
+
 
 {% endblock %}

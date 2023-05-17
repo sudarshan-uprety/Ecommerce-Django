@@ -99,7 +99,7 @@ DATABASES = {
         'NAME': config('DB_DATABASE'), 
         'USER': config('DB_USER'),
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
+        'HOST': config('DB_HOST'), #here make 'db' only if deployed with docker
         'PORT': config('DB_PORT'),
     }
 }

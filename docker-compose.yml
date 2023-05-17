@@ -15,7 +15,11 @@ services:
 
   db:
     image: postgres
+    ports:
+      - '5432:5432'
+
     environment:
-      - POSTGRES_DB=${DB_DATABASE}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=ourcart
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      

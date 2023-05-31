@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager,PermissionsMixin
 
 # Create your models here.
 
@@ -36,7 +36,7 @@ class MyAccountManager(BaseUserManager):
         return user
 
 
-class Account(AbstractBaseUser):
+class Account(AbstractBaseUser,PermissionsMixin):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     username = models.CharField(max_length=50, unique=True)
@@ -61,7 +61,7 @@ class Account(AbstractBaseUser):
         return f"{self.first_name} {self.last_name}"
 
     def __str__(self):
-        return self.email
+        return f"{self.first_name} {self.last_name}"
 
     def has_perm(self, perm, obj=None):
         return self.is_admin

@@ -10,22 +10,22 @@ from django.db.models import Q
 # Create your views here.
 
 def store(request,category_slug=None):
-    categories=None
-    products=None
+    # categories=None
+    # products=None
 
-    if category_slug != None:
-        categories=get_object_or_404(Category,slug=category_slug)
-        products=Product.objects.filter(category=categories,is_available=True)
-        paginator = Paginator(products,3) #here we are using paginator which is in next button when we click previous next, we have used 6 because we want to show only 6 in one page
-        page=request.GET.get('page')
-        paged_products=paginator.get_page(page)
-        product_count=products.count()
-    else:
-        products=Product.objects.all().filter(is_available=True).order_by('id')
-        paginator = Paginator(products,3) #here we are using paginator which is in next button when we click previous next, we have used 6 because we want to show only 6 in one page
-        page=request.GET.get('page')
-        paged_products=paginator.get_page(page)
-        product_count=products.count()
+    # if category_slug != None:
+    #     categories=get_object_or_404(Category,slug=category_slug)
+    #     products=Product.objects.filter(category=categories,is_available=True)
+    #     paginator = Paginator(products,3) #here we are using paginator which is in next button when we click previous next, we have used 6 because we want to show only 6 in one page
+    #     page=request.GET.get('page')
+    #     paged_products=paginator.get_page(page)
+    #     product_count=products.count()
+    # else:
+    products=Product.objects.all().filter(is_available=True).order_by('id')
+    paginator = Paginator(products,3) #here we are using paginator which is in next button when we click previous next, we have used 6 because we want to show only 6 in one page
+    page=request.GET.get('page')
+    paged_products=paginator.get_page(page)
+    product_count=products.count()
 
 
     context={

@@ -9,7 +9,6 @@ def home(request):
     if request.user.is_authenticated:
         cart_items=CartItem.objects.filter(user=request.user)
         if not cart_items.exists():
-            print('hi')
             products=Product.objects.all().filter(is_available=True)
             context={
             'products':products,
@@ -19,9 +18,7 @@ def home(request):
             product_id=cart_items.values_list('product',flat=True)
             categories=Category.objects.filter(product__in=product_id).distinct()
             recommended_products = Product.objects.filter(category__in=categories, is_available=True).distinct()
-            print(recommended_products)
             all_products = Product.objects.all().filter(is_available=True).exclude(category__in=categories)
-            print(all_products)
             products = list(recommended_products) + list(all_products)
             context={
                 'recommended_products':recommended_products,

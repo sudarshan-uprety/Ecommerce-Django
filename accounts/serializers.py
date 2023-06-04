@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from .models import Account
+from orders.models import Order,OrderProduct
 from django.core.exceptions import ValidationError
 from rest_framework.response import Response
 
@@ -46,3 +47,9 @@ class LoginSerializer(serializers.ModelSerializer):
     #         raise serializers.ValidationError('Fields can not be empty')
     #     return Response({"error":"Sorry wrong credentials"})
 
+class MyOrdersSerializer(serializers.Serializer):
+    order_number=serializers.CharField()
+    product_name=serializers.CharField()
+    product_quantity=serializers.IntegerField()
+    price=serializers.DecimalField(max_digits=10, decimal_places=2)
+    created_at=serializers.DateTimeField()

@@ -9,7 +9,8 @@ class RegestrationForm(forms.ModelForm):
                 "placeholder": "Enter Password",
                 "class": "form-control",
             }
-        )
+        ),
+        min_length=6
     )
     confirm_password = forms.CharField(
         widget=forms.PasswordInput(
@@ -17,7 +18,8 @@ class RegestrationForm(forms.ModelForm):
                 "placeholder": "Confirm Password",
                 "class": "form-control",
             }
-        )
+        ),
+        min_length=6
     )
 
     class Meta:

@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'store',
     'carts',
     'orders',
-    "debug_toolbar",
+    # "debug_toolbar",
     'jazzmin',
     'django.contrib.admin',
 
@@ -179,11 +179,11 @@ django_heroku.settings(locals())
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
-INTERNAL_IPS = [
-    # ...
-    "127.0.0.1",
-    # ...
-]
+# INTERNAL_IPS = [
+#     # ...
+#     "127.0.0.1",
+#     # ...
+# ]
 
 site_logo = 'logo.png'
 print(site_logo)

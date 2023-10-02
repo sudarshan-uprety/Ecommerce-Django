@@ -186,7 +186,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 # ]
 
 site_logo = 'logo.png'
-print(site_logo)
+# print(site_logo)
 JAZZMIN_SETTINGS = {
     # title of the window (Will default to current_admin_site.site_title if absent or None)
     "site_title": "OurCart Admin",

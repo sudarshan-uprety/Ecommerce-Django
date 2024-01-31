@@ -1,0 +1,15 @@
+name: create a comment in new issue
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  when-issue-opened:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "dump github content"
+        run: echo '${{ toJSON(gitthub.event) }}' | jq
+        shell: bash
+        
+      

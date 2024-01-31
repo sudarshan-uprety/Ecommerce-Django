@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "dump github content"
-        run: echo '${{ toJSON(gitthub.event) }}' | jq
+        run: echo '${{ toJSON(github.event) }}' | jq
         shell: bash
         
       

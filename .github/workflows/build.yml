@@ -30,11 +30,21 @@ jobs:
     steps:
     - name: Set permissions 
       run: sudo chmod -R 777 ${{ github.workspace }}
+      
+    - name: Debug Environment
+      run: |
+        echo "Current directory: $(pwd)"
+        ls -la
+    - name: Debug .env File
+      run: cat .env
+
     - uses: actions/checkout@v3
+    
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+        
     - name: Start docker container
       run: |
         sudo docker-compose up -d ourcart

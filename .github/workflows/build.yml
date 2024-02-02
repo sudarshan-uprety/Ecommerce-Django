@@ -27,7 +27,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
+    - name: deploy using ssh
       uses: appleboy/scp-action@v0.1.7
       with:
         host: ${{ secrets.HOST }}

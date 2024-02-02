@@ -53,6 +53,6 @@ jobs:
         target: /home/azureuser/sudarshan/Ecommerce-Django
         strip_components: 1
 
-        script: |
-          cd /home/azureuser/sudarshan/Ecommerce-Django
-          sudo docker-compose up --build -d
+    - name: Run additional commands on the server
+      run: |
+        ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ secrets.USERNAME }}@${{ secrets.HOST }} -p ${{ secrets.PORT }} 'cd /home/azureuser/sudarshan/Ecommerce-Django && sudo docker-compose up --build -d'

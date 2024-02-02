@@ -20,15 +20,15 @@ jobs:
     - name: Write GitHub environment variables to .env
       run: |
         echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> ${{ github.workspace }}/.env
-        echo "GITHUB_TOKEN=${{ secrets.DB_DATABASE }}" >> ${{ github.workspace }}/.env
-        echo "GITHUB_TOKEN=${{ secrets.DB_HOST }}" >> ${{ github.workspace }}/.env
-        echo "GITHUB_TOKEN=${{ secrets.DB_PASSWORD }}" >> ${{ github.workspace }}/.env
-        echo "GITHUB_TOKEN=${{ secrets.DB_PORT }}" >> ${{ github.workspace }}/.env
-        echo "GITHUB_TOKEN=${{ secrets.DB_USER }}" >> ${{ github.workspace }}/.env
-        echo "GITHUB_TOKEN=${{ secrets.EMAIL_HOST_PASSWORD }}" >> ${{ github.workspace }}/.env
-        echo "GITHUB_TOKEN=${{ secrets.EMAIL_HOST_USER }}" >> ${{ github.workspace }}/.env
-        echo "GITHUB_TOKEN=${{ secrets.KHALTI_PUBLIC_KET }}" >> ${{ github.workspace }}/.env
-        echo "GITHUB_TOKEN=${{ secrets.KHALTI_SECRET_KET }}" >> ${{ github.workspace }}/.env
+        echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> ${{ github.workspace }}/.env
+        echo "DB_HOST=${{ secrets.DB_HOST }}" >> ${{ github.workspace }}/.env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> ${{ github.workspace }}/.env
+        echo "DB_PORT=${{ secrets.DB_PORT }}" >> ${{ github.workspace }}/.env
+        echo "DB_USER=${{ secrets.DB_USER }}" >> ${{ github.workspace }}/.env
+        echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> ${{ github.workspace }}/.env
+        echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> ${{ github.workspace }}/.env
+        echo "KHALTI_PUBLIC_KET=${{ secrets.KHALTI_PUBLIC_KET }}" >> ${{ github.workspace }}/.env
+        echo "KHALTI_SECRET_KET=${{ secrets.KHALTI_SECRET_KET }}" >> ${{ github.workspace }}/.env
     - name: Set permissions 
       run: sudo chmod -R 777 ${{ github.workspace }}
     - uses: actions/checkout@v3

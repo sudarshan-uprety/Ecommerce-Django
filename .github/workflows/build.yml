@@ -6,8 +6,7 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
-env:
-  CI: true
+
 
 jobs:
   build:
@@ -21,8 +20,7 @@ jobs:
     steps:
     - name: Set permissions 
       run: sudo chmod -R 777 ${{ github.workspace }}
-    - name: 'Create env file'
-      run: |
+      
     - name: create env file
       run: |
              touch .env

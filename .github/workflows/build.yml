@@ -10,20 +10,31 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 4
       matrix:
         python-version: [3.9]
 
     steps:
-    - name: Set permissions 
-      run: sudo chmod -R 777 ${{ github.workspace }}
-      
     - uses: actions/checkout@v3
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd /home/azureuser/sudarshan/Ecommerce-Django
+          git pull origin main
+          sudo docker-compose up -d ourcart

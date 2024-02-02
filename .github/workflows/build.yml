@@ -17,6 +17,8 @@ jobs:
         python-version: [3.9]
 
     steps:
+    - name: Write GitHub environment variables to .env
+      run: echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> ${{ github.workspace }}/.env
     - name: Set permissions 
       run: sudo chmod -R 777 ${{ github.workspace }}
     - uses: actions/checkout@v3

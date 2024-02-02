@@ -30,6 +30,9 @@ jobs:
         echo EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }} >> .env
         echo KHALTI_PUBLIC_KEY=${{ secrets.KHALTI_PUBLIC_KEY }} >> .env
         echo KHALTI_SECRET_KEY=${{ secrets.KHALTI_SECRET_KEY }} >> .env
+    
+    - name: Debug .env File
+      run: cat .env
 
     - uses: actions/checkout@v3
     

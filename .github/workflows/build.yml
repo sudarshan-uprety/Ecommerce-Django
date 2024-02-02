@@ -23,15 +23,10 @@ jobs:
       run: sudo chmod -R 777 ${{ github.workspace }}
     - name: 'Create env file'
       run: |
-        echo "DB_DATABASE=${DB_DATABASE}" | sudo tee ${{ github.workspace }}/.env
-        echo "DB_HOST=${DB_HOST}" | sudo tee -a ${{ github.workspace }}/.env
-        echo "DB_PASSWORD=${DB_PASSWORD}" | sudo tee -a ${{ github.workspace }}/.env
-        echo "DB_PORT=${DB_PORT}" | sudo tee -a ${{ github.workspace }}/.env
-        echo "DB_USER=${DB_USER}" | sudo tee -a ${{ github.workspace }}/.env
-        echo "EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}" | sudo tee -a ${{ github.workspace }}/.env
-        echo "EMAIL_HOST_USER=${EMAIL_HOST_USER}" | sudo tee -a ${{ github.workspace }}/.env
-        echo "KHALTI_PUBLIC_KEY=${KHALTI_PUBLIC_KEY}" | sudo tee -a ${{ github.workspace }}/.env
-        echo "KHALTI_SECRET_KEY=${KHALTI_SECRET_KEY}" | sudo tee -a ${{ github.workspace }}/.env
+    - name: create env file
+      run: |
+             touch .env
+             echo DB_DATABASE=${{ secrets.DB_DATABASE }} >> .env
         
     - uses: actions/checkout@v3
     

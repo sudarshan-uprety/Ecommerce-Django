@@ -33,9 +33,9 @@ jobs:
     - name: Debug DB_DATABASE value
       run: |
         echo "DB_DATABASE=${DB_DATABASE}"
-        echo "DB_DATABASE=${{DB_DATABASE}}"
-        echo "DB_DATABASE=${{vars.DB_DATABASE}}"
-        echo "DB_DATABASE=${{vars.DB_DATABASE}}"
+        echo "DB_DATABASE=${{ DB_DATABASE }}"
+        echo "DB_DATABASE=${{ vars.DB_DATABASE }}"
+        echo "DB_DATABASE=${{ vars.DB_DATABASE }}"
 
     - name: Create .env file
       run: |

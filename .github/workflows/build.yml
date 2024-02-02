@@ -31,7 +31,17 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Create .env file
-      run: echo "data=thisisdata" > .env
+      run: 
+        echo "data=thisisdata" > .env
+        echo "DB_DATABASE=${DB_DATABASE}" >> .env
+        echo "DB_HOST=${DB_HOST}" >> .env
+        echo "DB_PASSWORD=${DB_PASSWORD}" >> .env
+        echo "DB_PORT=${DB_PORT}" >> .env
+        echo "DB_USER=${DB_USER}" >> .env
+        echo "EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}" >> .env
+        echo "EMAIL_HOST_USER=${EMAIL_HOST_USER}" >> .env
+        echo "KHALTI_PUBLIC_KEY=${KHALTI_PUBLIC_KEY}" >> .env
+        echo "KHALTI_SECRET_KEY=${KHALTI_SECRET_KEY}" >> .env
       
     - name: deploy using ssh
       uses: appleboy/scp-action@v0.1.7

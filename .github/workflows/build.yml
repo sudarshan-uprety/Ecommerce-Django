@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
+env:
+  CI: true
 
 jobs:
   build:
@@ -30,10 +32,7 @@ jobs:
         echo "EMAIL_HOST_USER=${EMAIL_HOST_USER}" | sudo tee -a ${{ github.workspace }}/.env
         echo "KHALTI_PUBLIC_KEY=${KHALTI_PUBLIC_KEY}" | sudo tee -a ${{ github.workspace }}/.env
         echo "KHALTI_SECRET_KEY=${KHALTI_SECRET_KEY}" | sudo tee -a ${{ github.workspace }}/.env
-    
-    - name: Debug .env File
-      run: cat .env
-
+        
     - uses: actions/checkout@v3
     
     - name: Set up Python ${{ matrix.python-version }}

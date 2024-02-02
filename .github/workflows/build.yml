@@ -17,15 +17,15 @@ jobs:
         python-version: [3.9]
 
     env:
-      DB_DATABASE: ${{ vars.DB_DATABASE }}
-      DB_HOST: ${{ vars.DB_HOST }}
-      DB_PASSWORD: ${{ vars.DB_PASSWORD }}
-      DB_PORT: ${{ vars.DB_PORT }}
-      DB_USER: ${{ vars.DB_USER }}
-      EMAIL_HOST_PASSWORD: ${{ vars.EMAIL_HOST_PASSWORD }}
-      EMAIL_HOST_USER: ${{ vars.EMAIL_HOST_USER }}
-      KHALTI_PUBLIC_KEY: ${{ vars.KHALTI_PUBLIC_KEY }}
-      KHALTI_SECRET_KEY: ${{ vars.KHALTI_SECRET_KEY }}
+      DB_DATABASE: ${{ DB_DATABASE }}
+      DB_HOST: ${{ DB_HOST }}
+      DB_PASSWORD: ${{ DB_PASSWORD }}
+      DB_PORT: ${{ DB_PORT }}
+      DB_USER: ${{ DB_USER }}
+      EMAIL_HOST_PASSWORD: ${{ EMAIL_HOST_PASSWORD }}
+      EMAIL_HOST_USER: ${{ EMAIL_HOST_USER }}
+      KHALTI_PUBLIC_KEY: ${{ KHALTI_PUBLIC_KEY }}
+      KHALTI_SECRET_KEY: ${{ KHALTI_SECRET_KEY }}
 
     steps:
     - name: Set permissions 

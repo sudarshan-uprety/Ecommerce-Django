@@ -18,7 +18,7 @@ jobs:
 
     steps:
     - name: Set permissions 
-      run: chmod -R 777 ${{ github.workspace }}
+      run: sudo chmod -R 777 ${{ github.workspace }}
     - uses: actions/checkout@v3
     # - run: cat .env >> $GITHUB_ENV
     - name: Set up Python ${{ matrix.python-version }}

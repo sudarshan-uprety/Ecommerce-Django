@@ -29,6 +29,13 @@ jobs:
     steps:
     - name: Checkout code for deployment
       uses: actions/checkout@v3
+      
+    - name: Debug DB_DATABASE value
+      run: |
+        echo "DB_DATABASE=${DB_DATABASE}"
+        echo "DB_DATABASE=${{DB_DATABASE}}"
+        echo "DB_DATABASE=${{vars.DB_DATABASE}}"
+        echo "DB_DATABASE=${{vars.DB_DATABASE}}"
 
     - name: Create .env file
       run: |

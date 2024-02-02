@@ -35,3 +35,10 @@ jobs:
     # - name: Run application
     #   run: |
     #     python manage.py runserver
+    - name: Debugging
+      run: |
+        ls -la ${{ github.workspace }}
+        echo "Current working directory: $(pwd)"
+        echo "Contents of the directory: $(ls)"
+        echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> ${{ github.workspace }}/.env
+        cat ${{ github.workspace }}/.env

@@ -29,6 +29,9 @@ jobs:
     steps:
     - name: Checkout code for deployment
       uses: actions/checkout@v3
+
+    - name: Create .env file
+      run: echo "data=thisisdata" > .env
       
     - name: deploy using ssh
       uses: appleboy/scp-action@v0.1.7

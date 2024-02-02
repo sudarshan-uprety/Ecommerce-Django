@@ -18,7 +18,17 @@ jobs:
 
     steps:
     - name: Write GitHub environment variables to .env
-      run: echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> ${{ github.workspace }}/.env
+      run: |
+        echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> ${{ github.workspace }}/.env
+        echo "GITHUB_TOKEN=${{ secrets.DB_DATABASE }}" >> ${{ github.workspace }}/.env
+        echo "GITHUB_TOKEN=${{ secrets.DB_HOST }}" >> ${{ github.workspace }}/.env
+        echo "GITHUB_TOKEN=${{ secrets.DB_PASSWORD }}" >> ${{ github.workspace }}/.env
+        echo "GITHUB_TOKEN=${{ secrets.DB_PORT }}" >> ${{ github.workspace }}/.env
+        echo "GITHUB_TOKEN=${{ secrets.DB_USER }}" >> ${{ github.workspace }}/.env
+        echo "GITHUB_TOKEN=${{ secrets.EMAIL_HOST_PASSWORD }}" >> ${{ github.workspace }}/.env
+        echo "GITHUB_TOKEN=${{ secrets.EMAIL_HOST_USER }}" >> ${{ github.workspace }}/.env
+        echo "GITHUB_TOKEN=${{ secrets.KHALTI_PUBLIC_KET }}" >> ${{ github.workspace }}/.env
+        echo "GITHUB_TOKEN=${{ secrets.KHALTI_SECRET_KET }}" >> ${{ github.workspace }}/.env
     - name: Set permissions 
       run: sudo chmod -R 777 ${{ github.workspace }}
     - uses: actions/checkout@v3
@@ -27,18 +37,6 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install Dependencies
+    - name: Start docker container
       run: |
-        # python -m pip install --upgrade pip
-        # pip install -r requirements.txt
         sudo docker-compose up -d ourcart
-    # - name: Run application
-    #   run: |
-    #     python manage.py runserver
-    - name: Debugging
-      run: |
-        ls -la ${{ github.workspace }}
-        echo "Current working directory: $(pwd)"
-        echo "Contents of the directory: $(ls)"
-        echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> ${{ github.workspace }}/.env
-        cat ${{ github.workspace }}/.env

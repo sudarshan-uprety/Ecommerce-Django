@@ -52,3 +52,7 @@ jobs:
         source: .
         target: /home/azureuser/sudarshan/Ecommerce-Django
         strip_components: 1
+
+        script: |
+          cd /home/azureuser/sudarshan/Ecommerce-Django
+          docker-compose up --build -d

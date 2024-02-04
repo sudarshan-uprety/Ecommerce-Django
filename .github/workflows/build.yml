@@ -52,4 +52,6 @@ jobs:
         source: .
         target: /home/azureuser/sudarshan/Ecommerce-Django
         strip_components: 1
+        script: |
+          sudo docker-compose up -d ourcart
         

@@ -32,26 +32,14 @@ jobs:
       
     - name: Create .env file
       run: |
-        echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
-        echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
-        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-        echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
-        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-        echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env
-        echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .env
-        echo "KHALTI_PUBLIC_KEY=${{ secrets.KHALTI_PUBLIC_KEY }}" >> .env
-        echo "KHALTI_SECRET_KEY=${{ secrets.KHALTI_SECRET_KEY }}" >> .env
+        echo "${{ vars.ENV }}" > .env
       
-    - name: deploy using ssh
-      uses: appleboy/scp-action@v0.1.7
+    - name: deploy using rsync
+      uses: burnett01/rsync-deployments@master
       with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.PORT }}
-        source: .
-        target: /home/azureuser/Ecommerce-Django
-        strip_components: 1
-        script: |
-          sudo docker-compose up -d ourcart
+        switches: -avzr --delete 
+        path: ./
+        remote_host: ${{ secrets.HOST }}
+        remote_user: ${{ secrets.USERNAME }}
+        remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
         

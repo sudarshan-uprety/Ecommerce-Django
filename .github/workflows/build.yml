@@ -50,7 +50,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.PORT }}
         source: .
-        target: /home/azureuser/sudarshan/Ecommerce-Django
+        target: /home/azureuser/Ecommerce-Django
         strip_components: 1
         script: |
           sudo docker-compose up -d ourcart

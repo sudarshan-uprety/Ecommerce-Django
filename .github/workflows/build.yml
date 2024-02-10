@@ -43,4 +43,18 @@ jobs:
         remote_host: ${{ secrets.HOST }}
         remote_user: ${{ secrets.USERNAME }}
         remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
-        
+  
+    - name: restart uvicorn service
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+            cd /home/azureuser/sudarshan/Ecommerce-Django
+            python -m venv env
+            source env/bin/activate
+            pip install -r requirements.txt
+            deactivate
+            sudo systemctl restart ourcart.socket
+

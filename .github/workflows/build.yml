@@ -57,4 +57,4 @@ jobs:
             pip install -r requirements.txt
             deactivate
             sudo systemctl restart ourcart.socket
-
+            sudo systemctl restart ourcart.service
